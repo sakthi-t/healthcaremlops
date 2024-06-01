@@ -1,0 +1,15 @@
+artifact_uri: file:///home/sakthi/healthcaremlops/mlruns/0/775a99bd245b46e9a5774efeca377789/artifacts
+end_time: 1717239104171
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 775a99bd245b46e9a5774efeca377789
+run_name: bald-grub-188
+run_uuid: 775a99bd245b46e9a5774efeca377789
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1717239098251
+status: 3
+tags: []
+user_id: sakthi
