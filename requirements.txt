@@ -1,0 +1,10 @@
+Flask
+mlflow
+metaflow
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+dagshub
+dvc
