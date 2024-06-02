@@ -1,17 +1,16 @@
 import warnings
 warnings.filterwarnings("ignore")
 
-import streamlit as st
-import numpy as np
-import pandas as pd
 import mlflow
 import mlflow.sklearn
-import os
+import pandas as pd
 from datetime import datetime
+from flask import Flask, request, render_template
 
-st.set_page_config(page_title="Production Grade Healthcare Data Analytics and Machine Learning Project With MLOPS", layout="centered")
+app = Flask(__name__, template_folder="templates")
 
-df_patients = pd.read_csv("/Data/dim_patients_final_rev01.csv")
+# Load patient data
+df_patients = pd.read_csv("Data/dim_patients_final_rev01.csv")
 patient_ids = df_patients['patient_id'].tolist()
 
 # Set the MLflow tracking URI to DagsHub
@@ -39,27 +38,16 @@ def predict_hba1c(patient_id, visited_date, sugar):
     prediction = loaded_model.predict(input_df)
     return prediction[0]
 
-# Streamlit interface
-st.title("HBA1C Prediction")
-st.write("Select Patient ID, Visited Date, and Sugar value to predict HBA1C.")
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    prediction = None
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        visited_date = request.form['visited_date']
+        sugar = float(request.form['sugar'])
+        prediction = predict_hba1c(patient_id, visited_date, sugar)
+    
+    return render_template('index.html', patient_ids=patient_ids, prediction=prediction)
 
-st.markdown(
-    """
-    <div style="background-color: #FF9798; color: white; padding: 10px; border-radius: 5px;">
-        Choose sugar levels between 50 and 600. HBA1C levels are influenced by sugar values: higher sugar typically results in higher HBA1C. 
-        This machine learning project uses synthetic data and is not a definitive method to determine HBA1C levels. For accurate results, 
-        please select a date within 2024. The dataset contains dates from 2023 to April 2024. Patient names are fictional. Users can only select 
-        from existing patient IDs, and there is no correlation between User ID and sugar levels.
-    </div>
-    """, unsafe_allow_html=True
-)
-
-patient_id = st.selectbox("Patient ID", patient_ids)
-visited_date = st.date_input("Visited Date", min_value=datetime(2023, 1, 1), max_value=datetime(2024, 4, 30))
-sugar = st.number_input("Sugar", min_value=50.0, max_value=600.0, value=100.0)
-
-if st.button("Predict HBA1C"):
-    prediction = predict_hba1c(patient_id, visited_date, sugar)
-    st.write(f"Predicted HBA1C: {prediction}")
-
-st.write("Data versioned with DVC. Model pipelines built using Metaflow. Experiments tracked in MLflow. Model stored in DagsHub. Dockerized and deployed with CI/CD via GitHub Actions.")
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -13,19 +13,24 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Push to Hugging Face Hub
+      - name: Build and push Docker image to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git remote set-url origin https://huggingface.co/spaces/sakthi07/hba1c
+          # Set Git config
           git config --global user.email "t.shakthi@gmail.com"
           git config --global user.name "sakthi07"
-          git push https://sakthi07:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/sakthi07/hba1c main --force
+
+          # Build Docker image
+          docker build -t sakthi07/health:latest .
+          
+          # Tag Docker image
+          docker tag sakthi07/health:latest huggingface.co/spaces/sakthi07/health:latest
+          docker tag sakthi07/health:latest huggingface.co/spaces/sakthi07/health:$(date +%Y%m%d%H%M%S)
+
+          # Login to Hugging Face Docker registry
+          echo $HF_TOKEN | docker login --username sakthi07 --password-stdin huggingface.co
+
+          # Push Docker image to Hugging Face
+          docker push huggingface.co/spaces/sakthi07/health:latest
+          docker push huggingface.co/spaces/sakthi07/health:$(date +%Y%m%d%H%M%S)
