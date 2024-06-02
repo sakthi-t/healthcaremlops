@@ -18,7 +18,7 @@ jobs:
           SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Build the image with a context (current directory)
+          echo "Building image: $HF_USERNAME/$SPACE_NAME"
           docker build -t $HF_USERNAME/$SPACE_NAME:latest .
 
           # Tag the image for Hugging Face with ":latest" and timestamped versions
@@ -31,4 +31,3 @@ jobs:
           # Push the image to Hugging Face with ":latest" and timestamped versions
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:latest
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
-
