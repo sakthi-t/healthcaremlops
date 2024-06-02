@@ -26,4 +26,6 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git remote set-url origin https://huggingface.co/spaces/sakthi07/hba1c
-          git push origin main --force
+          git config --global user.email "t.shakthi@gmail.com"
+          git config --global user.name "sakthi07"
+          git push https://sakthi07:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/sakthi07/hba1c main --force
