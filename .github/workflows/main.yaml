@@ -1,48 +1,39 @@
-# Your workflow name.
-name: Deploy to Heroku
+name: Sync to Hugging Face hub
 
-# Run workflow on every push to main branch.
 on:
   push:
     branches: [main]
 
-# Your workflow jobs.
+  workflow_dispatch:
+
 jobs:
-  build:
+  sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      # Check-out your repository.
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      # Debug step: Print Heroku App Name
-      - name: Debug Heroku App Name
-        run: |
-          echo "Heroku App Name: healthmlops"
-
-      # Debug step: Print email (remove or obfuscate in real use to avoid exposing your email)
-      - name: Debug Heroku Email
-        run: |
-          echo "Heroku Email: t.shakthi@gmail.com"
-
-      # Manual login to Heroku container registry
-      - name: Heroku Container Registry Login
-        run: |
-          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
-          
-      # Check Docker login status
-      - name: Check Docker Login Status
-        run: |
-          docker info
-
-      # Build, Push and Release a Docker container to Heroku
-      - name: Build, Push and Release a Docker container to Heroku
-        uses: gonuit/heroku-docker-deploy@v1.3.3
+      - uses: actions/checkout@v3
         with:
-          email: "t.shakthi@gmail.com"
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "healthmlops"
-          dockerfile_directory: ./
-          dockerfile_name: Dockerfile
-          docker_options: "--no-cache"
-          process_type: web
+          fetch-depth: 0
+          lfs: true
+      - name: Build and push Docker image to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          HF_USERNAME="sakthi07"
+          SPACE_NAME="health"
+
+          echo "Building image: $HF_USERNAME/$SPACE_NAME"
+
+          # Build the Docker image
+          docker build -t $HF_USERNAME/$SPACE_NAME:latest .
+
+          # Check built image
+          docker images | grep $HF_USERNAME/$SPACE_NAME
+
+          # Tag the image correctly
+          docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:latest
+          docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
+
+          # Login and push
+          echo $HF_TOKEN | docker login --username $HF_USERNAME --password-stdin huggingface.co
+          docker push huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:latest
+          docker push huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
