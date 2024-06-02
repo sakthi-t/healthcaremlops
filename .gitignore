@@ -1,6 +1,3 @@
-Dockerfile
-app_flask.py
-.github/
 .metaflow/
 Data Analysis Python Pandas/
 mlruns/
