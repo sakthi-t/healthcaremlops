@@ -8,14 +8,14 @@ jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
       - name: Build and push Docker image to Hugging Face
         env:
-          HF_USERNAME: ${{ secrets.HF_USERNAME }}
-          SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+          HF_USERNAME: sakthi07
+          SPACE_NAME: health
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           echo "Building image: $HF_USERNAME/$SPACE_NAME"
