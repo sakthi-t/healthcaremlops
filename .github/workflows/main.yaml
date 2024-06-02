@@ -19,15 +19,18 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           echo "Building image: $HF_USERNAME/$SPACE_NAME"
-          docker build -t $HF_USERNAME/$SPACE_NAME:latest .
 
-          # Tag the image for Hugging Face with ":latest" and timestamped versions
+          # **1. Verify Build Command:**
+          docker build -t $HF_USERNAME/$SPACE_NAME:latest .  # Ensure context is .
+
+          # **2. Check Built Image:**
+          docker images | grep $HF_USERNAME/$SPACE_NAME  # Check for built image
+
+          # Tag the image (assuming successful build)
           docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/$HF_USERNAME/$SPACE_NAME:latest
           docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
 
-          # Login to Hugging Face using the provided token
+          # Login and push (assuming successful build and tagging)
           echo $HF_TOKEN | docker login --username $HF_USERNAME --password-stdin huggingface.co
-
-          # Push the image to Hugging Face with ":latest" and timestamped versions
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:latest
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
