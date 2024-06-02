@@ -17,11 +17,13 @@ jobs:
 
       # Debug step: Print Heroku App Name
       - name: Debug Heroku App Name
-        run: echo "Heroku App Name: healthmlops-697d66cdd02c"
+        run: |
+          echo "Heroku App Name: healthmlops-697d66cdd02c"
 
       # Debug step: Print email (remove or obfuscate in real use to avoid exposing your email)
       - name: Debug Heroku Email
-        run: echo "Heroku Email: t.shakthi@gmail.com"
+        run: |
+          echo "Heroku Email: t.shakthi@gmail.com"
 
       # Manual login to Heroku container registry
       - name: Heroku Container Registry Login
