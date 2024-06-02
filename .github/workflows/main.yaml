@@ -18,7 +18,7 @@ jobs:
       # Debug step: Print Heroku App Name
       - name: Debug Heroku App Name
         run: |
-          echo "Heroku App Name: healthmlops-697d66cdd02c"
+          echo "Heroku App Name: healthmlops"
 
       # Debug step: Print email (remove or obfuscate in real use to avoid exposing your email)
       - name: Debug Heroku Email
@@ -41,7 +41,7 @@ jobs:
         with:
           email: "t.shakthi@gmail.com"
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "healthmlops-697d66cdd02c"
+          heroku_app_name: "healthmlops"
           dockerfile_directory: ./
           dockerfile_name: Dockerfile
           docker_options: "--no-cache"
