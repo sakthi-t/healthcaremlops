@@ -6,7 +6,7 @@ on:
   push:
     branches: [main]
 
-# Your workflows jobs.
+# Your workflow jobs.
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,6 +29,11 @@ jobs:
       - name: Heroku Container Registry Login
         run: |
           echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
+          
+      # Check Docker login status
+      - name: Check Docker Login Status
+        run: |
+          docker info
 
       # Build, Push and Release a Docker container to Heroku
       - name: Build, Push and Release a Docker container to Heroku
