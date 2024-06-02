@@ -20,7 +20,7 @@ jobs:
         run: |
           docker build -t $HF_USERNAME/$SPACE_NAME .
           docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/$HF_USERNAME/$SPACE_NAME:latest
-          docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
+          docker tag huggingface.co/$HF_USERNAME/$SPACE_NAME:latest huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
           echo $HF_TOKEN | docker login --username $HF_USERNAME --password-stdin huggingface.co
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:latest
           docker push huggingface.co/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
