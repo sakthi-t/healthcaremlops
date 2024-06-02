@@ -31,6 +31,6 @@ jobs:
           docker tag $HF_USERNAME/$SPACE_NAME:latest huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
 
           # Login and push (assuming successful build and tagging)
-          echo $HF_TOKEN | docker login --username $HF_USERNAME --password-stdin huggingface.co
+          echo $HF_TOKEN | docker login --username $HF_USERNAME --password-stdin huggingface.co/spaces
           docker push huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:latest
           docker push huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME:$(date +%Y%m%d%H%M%S)
